@@ -86,14 +86,14 @@ export default {
       clearTimeout(this.menuTimer);
     },
     init() {
-        this.axios.get("/home/productCateList").then((res) => {
+        this.axios.get("/home/productCateAndBannerList").then((res) => {
           let a =[{
 
           }]
           // 处理类型
-          let homeMenusList= res.homeMenusList;
-          for (let i = 0; i < res.length; i++) {
-            const cate = res[i];
+          let homeMenusList= res.homeCateDTO;
+          for (let i = 0; i < homeMenusList.length; i++) {
+            const cate = homeMenusList[i];
             this.menus.push({
               value:cate.name,
               type:cate.id,
@@ -105,7 +105,7 @@ export default {
           }
 
           // banner
-          let homeAdvertisesList= res.homeAdvertisesList;
+          let homeAdvertisesList= res.advertisesList;
           for (let index = 0; index < homeAdvertisesList.length; index++) {
             const adver = homeAdvertisesList[index];
             this.banners.push({
