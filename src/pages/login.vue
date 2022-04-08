@@ -65,15 +65,15 @@ export default {
          }),{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then((res)=>{
        
            // 将 tokenHead+jwtToken 存入到cookie  下次请求就可以携带在请求头中了
-          this.$cookie.set('token',res.tokenHead+' '+res.token,{expires:'1M'});
+          // this.$cookie.set('token',res.tokenHead+' '+res.token,{expires:'1M'});
           // 保存到全局变量中
-          this.$store.dispatch('saveToken',res.token);
+          // this.$store.dispatch('saveToken',res.token);
           // 拿到payloader 解码
-          var tokenStr= decodeURIComponent(escape(window.atob(res.token.split('.')[1])));
+          // var tokenStr= decodeURIComponent(escape(window.atob(res.token.split('.')[1])));
           // 转换为json对象
-          let username = JSON.parse(tokenStr).user_name;
+          // let username = JSON.parse(tokenStr).user_name;
 
-          // let username=res.username
+          let username=res.username;
           
           // setCookie("token",username,120);
 
