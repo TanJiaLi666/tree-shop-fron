@@ -41,9 +41,11 @@ function getCookie(c_name){
 axios.interceptors.request.use(config => {
   // jwt令牌
   var token= getCookie("token");
+  var tokenHeader = getCookie("tokenHeader")
   window.console.log(token);
+  window.console.log(tokenHeader);
   if (token !=undefined) {
-    config.headers['Authorization'] = token; // 让每个请求携带自定义token 请根据实际情况自行修改
+    config.headers[tokenHeader] = token; // 让每个请求携带自定义token 请根据实际情况自行修改
   } 
   return config
 }, error => {
