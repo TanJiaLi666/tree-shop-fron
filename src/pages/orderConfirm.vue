@@ -315,16 +315,6 @@ export default {
     // axios
     let pca = require("../api/pca.json");
     this.pcaList = pca;
-    /*
-    {
-     '湖南省':{长沙市:[区,区]} ,
-     '江西省':{长沙市:[区,区]} ,
-     '湖北省':{长沙市:[区,区]}
-     },
-
-     pca["湖北省"]["长沙市"]
-     
-    */
   },
 
   methods: {
