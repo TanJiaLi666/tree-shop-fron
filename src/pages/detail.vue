@@ -192,7 +192,7 @@ export default {
         this.clicked = index;
         this.skuId = item.id;
         this.albumPics = [item.pic];
-        this.skuName=this.product.name+ item.sp1+item.sp2+"<br/>库存："+(item.stock-item.lockStock)+this.product.unit+"--"+item.id;
+        this.skuName=this.product.name+ item.sp1+item.sp2+"<br/>库存："+(item.stock-item.lockStock)+this.product.unit;
         this.skuPrice=item.price;
       }
     },

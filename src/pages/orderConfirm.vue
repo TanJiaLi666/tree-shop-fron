@@ -231,14 +231,16 @@
           </div>
           <div class="item">
             <!-- 1. 引入组件支持 -->
-            <el-autocomplete
-              class="inline-input"
-              v-model="checkedItem.detailAddress"
-              :fetch-suggestions="querySearch"
-              placeholder="请输入详细地址"
-              :trigger-on-focus="false"
-              @select="handleSelect"
-            ></el-autocomplete> 
+            <textarea class="text-area" v-model="checkedItem.detailAddress" placeholder="请输入详细地址"/>
+<!--            <input class="inline-input input"  v-model="checkedItem.detailAddress" placeholder="请输入详细地址"/>-->
+<!--            <el-autocomplete
+                class="inline-input"
+                v-model="checkedItem.detailAddress"
+                :fetch-suggestions="querySearch"
+                placeholder="请输入详细地址"
+                :trigger-on-focus="false"
+                @select="handleSelect"
+            ></el-autocomplete>-->
           </div>
           <div class="item">
             <input
@@ -752,4 +754,24 @@ export default {
     }
   }
 }
+.text-area{
+  width: 100%;
+  border-top:1px solid gainsboro;
+  border-bottom:1px solid gainsboro;
+
+}
+.text-area textarea {
+  width: 100%;
+  margin: 0.75rem  0;
+  border: none;
+  outline: none;
+  padding-left: 1.125rem;
+  height: 6.5rem ;
+}
+
+.text-area textarea::-webkit-input-placeholder {
+  color: #9E9E9E;
+
+}
+
 </style>
