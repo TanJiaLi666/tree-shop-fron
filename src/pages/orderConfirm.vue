@@ -512,7 +512,7 @@ export default {
           .post("/order/generateOrder", {
             itemIds: this.itemIds,     // 购物id
             memberReceiveAddressId: item.id,  // 地址id
-            //payType: 1,   // 支付宝
+            payType: 1,   // 支付宝
           })
           .then((res) => {
             this.$router.push({

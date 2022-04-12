@@ -115,7 +115,6 @@ export default{
          this.payment=res.payAmount;
          this.orderSn=res.orderSn;
          this.orderOvertime=res.normalOrderOvertime;
-
       }) 
     },
     paySubmit(payType){
