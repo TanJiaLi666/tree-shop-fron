@@ -74,7 +74,7 @@
             @current-change="handleChange"
             >
           </el-pagination>
-          <div class="load-more" v-if="false">
+          <div class="load-more" v-if="showNextPage">
               <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
           </div>
           <div class="scroll-more"
@@ -134,9 +134,13 @@
            
         }),{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then((res)=>{
           this.loading = false;
-          this.list = res.records;
+          this.list = res.list;
           this.total = res.total;
-          this.showNextPage = res.hasNextPage;
+          if (res.totalPage > res.pageNum && res.pageSize<res.total) {
+            this.showNextPage = true;
+          }else if (res.total<res.pageSize) {
+            this.showNextPage = false;
+          }
           this.busy = false;
         }).catch(()=>{
           this.loading = false;
