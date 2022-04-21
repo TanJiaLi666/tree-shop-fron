@@ -52,6 +52,7 @@ export default {
 
               this.goodsItems.push({
                 boxTitle:cate.categoryName ,
+                id: cate.categoryId,
                 url: '/#/searchResult/'+cate.categoryName,
                 listData:{
                   goods:goods

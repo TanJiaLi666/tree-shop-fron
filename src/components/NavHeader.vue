@@ -3,7 +3,7 @@
     <div class="nav-topbar">
       <div class="container">
         <div class="topbar-menu">
-          <a href="javascript:;">图灵商城</a> 
+          <a href="javascript:;">商城</a>
         </div>
         <div class="topbar-user">
           <a href="javascript:;" v-if="username">{{username}}</a>
@@ -100,10 +100,10 @@
               </ul>
             </div>
           </div>
-        </div-->
+        </div>-->
         <div class="header-search">
           <div class="wrapper">
-            <input type="text"  v-model="keyword" name="keyword">
+            <input type="text"  v-model="keyword" placeholder="请输入搜索商品" name="keyword">
             <a href="javascript:;" @click="doSearch()"></a>
           </div>
         </div>
@@ -128,7 +128,7 @@
          {id:6,mainImage:"/imgs/nav-img/nav-3-6.jpg",subtitle:"产品名称",name:"产品名称",price:1000,currency:'元'},
 
         ],
-        keyword:"请输入产品关键字"
+        keyword:""
       }
     },
     computed:{
@@ -171,9 +171,11 @@
 
       },
       doSearch(){
-               
-            
-           this.$router.push(`/searchResult/${this.keyword}`).catch(err => { window.console.log(err)});
+        if (this.keyword == null) {
+          this.keyword = '*s*'
+        }else {
+          this.$router.push(`/searchResult/${this.keyword}`).catch(err => { window.console.log(err)});
+        }
       },
       goToCart(){
         this.$router.push('/cart');

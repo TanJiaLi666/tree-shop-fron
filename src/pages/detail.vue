@@ -172,7 +172,8 @@ export default {
         .then(() => {
           this.$message.success({ 
           dangerouslyUseHTMLString: true,
-          message:"添加购物车成功，请点击<a href='/*/cart'>购物车</a>查看"});
+          message:"添加购物车成功，请点击<a href='/*/cart'>购物车</a>查看"
+          });
         });
     },
     handlerSkuid(item, index) {

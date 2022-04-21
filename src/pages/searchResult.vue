@@ -51,14 +51,22 @@
     },
     methods:{
       init(){
-        
          this.doSearch( );
-
       },
       doSearch( ){
-           this.axios.post('/esProduct/search/simple',Qs.stringify({keyword : this.keywords},{indices: false}),
-                  {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then((res)=>{
-                     this.productList=res.list;   
+        this.axios.post('/product/search/simple',Qs.stringify({keyword : this.keywords},{indices: false}),
+            {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then((res)=>{
+            let s = res;
+            for (let index = 0; index < s.length; index++) {
+              const cate = s[index];
+              this.productList.push({
+                id: cate.id,
+                pic: cate.pic,
+                name: cate.name,
+                subtitle: cate.subtitle,
+                price: cate.price
+              });
+            }
           });
       },
       buyIt(id){

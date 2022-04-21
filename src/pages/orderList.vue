@@ -2,7 +2,8 @@
   <div class="order-list">
     <order-header title="订单列表">
       <template v-slot:tip>
-        <span>请谨防钓鱼链接或诈骗电话，了解更多></span>
+        <span><a href="http://localhost:8081/#/index" target="_blank">首页></a></span>
+        <span><a href="http://www.baidu.com/" target="_blank">请谨防钓鱼链接或诈骗电话></a></span>
       </template>
     </order-header>
     <div class="wrapper">

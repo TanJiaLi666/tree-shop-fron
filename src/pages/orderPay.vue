@@ -50,15 +50,11 @@
           <div class="pay-way">
             <p>支付平台</p>
             <div class="pay pay-ali" @click="paySubmit(1)" :class="{'checked':payType==1}"></div>
-            <div class="pay pay-wechat" :class="{'checked':payType==2}" ></div>
+            <div class="pay pay-wechat" @click="paySubmit(2)"  :class="{'checked':payType==2}" ></div>
           </div>
-           <div class="pay-way"  v-if="showPay && payType==1" >
-              <img  :src="payImageQr"/>
-            </div>
         </div>
       </div>
     </div>
-    <scan-pay-code v-if="showPay && payType==2" @close="closePayModal" :img="payImg"></scan-pay-code>
     <modal
       title="支付确认"
       btnType="3"
@@ -101,7 +97,6 @@ export default{
   },
   components:{
     OrderHeader,
-    ScanPayCode,
     Modal
   },
   mounted(){
@@ -122,30 +117,32 @@ export default{
       this.showPay = !this.showPay;
       // 支付宝
       if(payType == 1){ 
-          this.axios.post('/order/tradeQrCode',Qs.stringify({
+          this.axios.post('/order/paySuccess',Qs.stringify({
           orderId:this.orderId,
           payType:1
         }),{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then((res)=>{
-        this.payImageQr='http://localhost:8888'+res;
-        window.console.log(res);
+          if (res) {
+            window.console.log(res);
+            this.$message.info("支付成功");
+            this.$router.push('/index');
+          }else {
+            this.$message.warning("支付失败");
+          }
+
         })
       }else{
         // 微信
-        this.axios.post('/pay',{
+        this.axios.post('/order/paySuccess',Qs.stringify({
           orderId:this.orderId,
-          orderName:'图灵商城基础版',
-          amount:0.01,//单位元
-          payType:2 //1支付宝，2微信
-        }).then((res)=>{
-          QRCode.toDataURL(res.content)
-          .then(url => {
-            this.showPay = true;
-            this.payImg = url;
-            this.loopOrderState();
-          })
-          .catch(() => {
-            this.$message.error('微信二维码生成失败，请稍后重试');
-          })
+          payType:2
+        }),{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then((res)=>{
+          if (res) {
+            window.console.log(res);
+            this.$message.info("支付成功");
+            this.$router.push('/index');
+          }else {
+            this.$message.warning("支付失败");
+          }
         })
       }
     },
