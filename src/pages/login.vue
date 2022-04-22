@@ -8,7 +8,6 @@
         <div class="login-form">
           <h3>
             <span class="checked">帐号登录</span>
-              <!-- <span class="sep-line">|</span><span>扫码登录</span> -->
           </h3>
           <div class="input">
             <input type="text" placeholder="请输入帐号" v-model="username">
@@ -21,19 +20,16 @@
           </div>
           <div class="tips">
             <!-- <div class="sms" @click="register">手机短信登录/注册</div> -->
-            <div class="reg" @click="register">立即注册<span>|</span>忘记密码？</div>
+            <div class="reg" @click="register" style="color: rgba(0,0,0,0.56)">立即注册</div>
           </div>
         </div>
       </div>
     </div>
     <div class="footer">
       <div class="footer-link">
-        <a href="http://www.tulingxueyuan.cn/" target="_blank">图灵学院</a><span>|</span>
-        <a href="https://ke.qq.com/course/231516?tuin=a6505b53" target="_blank">腾讯课堂java架构师培训</a><span>|</span>
-        <a href="https://ke.qq.com/course/429988" target="_blank">数据结构与算法</a><span>|</span>
-        <a href="https://tuling.ke.qq.com/" target="_blank">腾讯课堂图灵学院</a>
+        <a href="http://www.baidu.com/" target="_blank" style="color: rgba(0,0,0,0.56)">湘南学院</a>
       </div>
-      <p class="copyright">Copyright ©2019 图灵学院 All Rights Reserved.</p>
+      <p class="copyright" style="color: rgba(0,0,0,0.42)">TanJiaLi ©2022 湘南学院 All Rights Reserved.</p>
     </div>
   </div>
 </template>
@@ -107,6 +103,7 @@ export default {
 </script>
 <style lang="scss">
 .login{
+  background-color: rgba(193,203,149, 0.99);
   &>.container{
     height:113px;
     img{
@@ -115,7 +112,7 @@ export default {
     }
   }
   .wrapper{
-    background:url('/imgs/login-bg.jpg') no-repeat center;
+    background:url('/imgs/login-bg.png') no-repeat center;
     .container{
       height:576px;
       .login-form{
@@ -124,7 +121,7 @@ export default {
         padding-right: 31px;
         width:410px;
         height:510px;
-        background-color:#ffffff;
+        background-color: rgba(193,203,149, 0.99);
         position:absolute;
         bottom:29px;
         right:0;
