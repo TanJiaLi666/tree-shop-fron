@@ -1,5 +1,5 @@
 module.exports = {
-  devServer:{  
+  devServer:{
     disableHostCheck: true, // 让vue不强制要求使用host来访问
     host:'localhost',
     port:8081, 

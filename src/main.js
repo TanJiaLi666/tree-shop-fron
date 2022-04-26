@@ -4,12 +4,13 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueLazyLoad from 'vue-lazyload'
 import VueCookie from 'vue-cookie'
-import { Message,Autocomplete } from 'element-ui'
+import { Message,Autocomplete,Drawer,Button,Badge,Collapse,CollapseItem,Avatar } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // npm install --save font-awesome
 import 'font-awesome/css/font-awesome.min.css'
 import store from './store'  // 全局变量
-import App from './App.vue' 
+import App from './App.vue'
+
 
 // import env from './env'
 // mock开关
@@ -94,7 +95,12 @@ Vue.use(VueLazyLoad,{
 Vue.prototype.$message = Message;
 Vue.config.productionTip = false
 
-
+Vue.use(Drawer);
+Vue.use(Button);
+Vue.use(Badge);
+Vue.use(Collapse);
+Vue.use(CollapseItem);
+Vue.use(Avatar);
 // 创建VUe根实例
 new Vue({
   store,

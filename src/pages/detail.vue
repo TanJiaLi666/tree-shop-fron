@@ -1,6 +1,6 @@
 <template>
   <div class="detail">
-    <product-param v-bind:title="product.name"></product-param>
+    <product-param v-bind:title="product.name" :product-id="id"></product-param>
     <div class="wrapper">
       <div class="container clearfix">
         <div class="swiper">
