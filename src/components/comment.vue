@@ -16,61 +16,72 @@
         </div>
       </div>
       <div class="reply-btn-box" v-show="btnShow">
+        <el-rate
+            show-text
+            v-model="star"
+            :colors="colors">
+        </el-rate>
         <el-button class="reply-btn" size="medium" @click="sendComment" type="primary">发表评论</el-button>
       </div>
     </div>
-<!--    el-scrollbar style="height: 100%"-->
-    <el-scrollbar style="height: 100%" >
+    <div class="overflowAuto">
       <div v-for="(item,i) in comments" :key="i" class="author-title reply-father">
         <el-avatar class="header-img" :size="40" :src="item.headImg"></el-avatar>
         <div class="author-info">
-          <span class="author-commentUser">{{item.commentUser}}</span>
-          <span class="author-time">{{item.updatedDate}}</span>
+            <span class="author-commentUser">{{item.commentUser}}</span>
+            <span class="author-time">{{item.updatedDate}}</span>
+          <el-rate
+              show-text
+              disabled
+              v-model="item.star"
+              :colors="colors">
+          </el-rate>
         </div>
         <div class="icon-btn">
-                <span class="reply-span" @click="showReplyInput(i,item.commentUser,item.commentId)">
-                    回复
-                </span>
+          <span class="reply-span" @click="showReplyInput(i,item.commentUser,item.commentId)">
+            回复
+          </span>
+          <span class="reply-span" @click="showReply(i)">
+            查看回复
+          </span>
         </div>
         <div class="talk-box">
-          <p>
-            <span class="reply">{{item.commentContent}}</span>
-          </p>
-        </div>
-        <div class="reply-box">
-          <div v-for="(reply,j) in item.reply" :key="j" class="author-title">
-            <div class="author-info">
-              <span class="author-commentUser">{{reply.commentUser}}</span>
-              <span class="author-time">{{reply.updatedDate}}</span>
-            </div>
-            <div class="icon-btn">
-                        <span class="reply-span" @click="showReplyInput(i,reply.commentUser,reply.commentId)">
-                            回复</span>
-            </div>
-            <div class="talk-box">
               <p>
-                <span class="reply"><span class="reply-span-down">回复</span> @{{reply.toCommentUser}}:</span>
-                <span class="reply">{{reply.commentContent}}</span>
+                <span class="reply">{{item.commentContent}}</span>
               </p>
             </div>
-            <div class="reply-box">
-
+        <div class="reply-box" v-show="_replyShow(i)">
+              <div v-for="(reply,j) in item.reply" :key="j" class="author-title">
+                <el-avatar class="header-img" :size="40" :src="reply.headImg"></el-avatar>
+                <div class="author-info">
+                  <span class="author-commentUser">{{reply.commentUser}}</span>
+                  <span class="author-time">{{reply.updatedDate}}</span>
+                </div>
+<!--                <div class="icon-btn">
+                  <span class="reply-span"
+                        @click="showReplyInput(i,reply.commentUser,reply.commentId)">回复
+                  </span>
+                </div>-->
+                <div class="talk-box">
+                  <p>
+                    <span class="reply"><span class="reply-span-down">回复</span> @{{reply.toCommentUser}}:</span>
+                    <span class="reply">{{reply.commentContent}}</span>
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
         <div v-show="_inputShow(i)" class="my-reply my-comment-reply">
-          <div class="reply-info">
-            <div tabindex="0" contenteditable="true" spellcheck="false" placeholder="输入评论..."
-                 @input="onDivInput($event)" class="reply-input reply-comment-input"></div>
-          </div>
-
-          <div class=" reply-btn-box">
-            <el-button class="reply-btn" size="medium" @click="sendCommentReply(i,j)" type="primary">发表评论
-            </el-button>
-          </div>
-        </div>
+              <div class="reply-info">
+                <div tabindex="0" contenteditable="true" spellcheck="false" placeholder="输入评论..."
+                     @input="onDivInput($event)" class="reply-input reply-comment-input"></div>
+              </div>
+              <div class=" reply-btn-box">
+                <el-button class="reply-btn" size="medium" @click="sendCommentReply(i,j)" type="primary">回复内容
+                </el-button>
+              </div>
+            </div>
       </div>
-    </el-scrollbar>
+    </div>
   </div>
 </template>
 
@@ -106,35 +117,17 @@ export default {
   name: 'ArticleComment',
   data() {
     return {
-      count: 100,
-      loading: false,
+      star: null,
+      colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
       btnShow: false,
       index: '0',
-      myHeader:'https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg',
+      num_index: '0',
+      myHeader:'',
       replyComment: '',
       myName: '用户名',
       toCommentUser: '',
       parentCommentId: -1,
-      comments: [
-        {
-          commentUser: '',
-          commentId: '',
-          commentContent: '',
-          updatedDate: '',
-          inputShow: false,
-          reply: [
-            {
-              commentUser: '',
-              commentId: '',
-              toCommentUser: '',
-              parentCommentId: '',
-              commentContent: '',
-              updatedDate: '',
-              inputShow: false
-            }
-          ]
-        }
-      ]
+      comments:null
     }
   },
   props: {
@@ -151,30 +144,40 @@ export default {
     this.getCurrentUser()
     this.getCommentData()
   },
-  computed: {
-    noMore () {
-      return this.count >= 20
-    },
-    disabled () {
-      return this.loading || this.noMore
-    }
-  },
   methods: {
     getCurrentUser(){
-      this.axios.get(`/comment/getCurrentUser`).then((res)=>{
+      this.axios.get(`/user/info`).then((res)=>{
         //获取当前用户
-        this.myName = res.member;
+        this.myName = res.username;
+        this.myHeader = res.myHeader;
       })
     },
     getCommentData() {
-      this.axios.get(`/comment/listMain/${this.ProductIdParam}`).then((res)=>{
+      this.axios.get(`/comment/list/${this.ProductIdParam}`).then((res)=>{
         //获取评论列表
-        this.comments = res.commentList;
+        this.comments = res;
       })
     },
     saveComment(comment){
-      this.axios.post('/comment/opeMain').then((res)=>{
-        this.comments = res.commentList;
+      let formData = new FormData();
+      formData.append("memberNickName", comment.commentUser);
+      formData.append("content", comment.commentContent);
+      formData.append("productId", comment.ProductIdParam);
+      formData.append("memberIcon", comment.headIcon);
+      formData.append("star", comment.star);
+      this.axios.post('/comment/opeMain',formData).then(()=>{
+        this.getCommentData()
+      })
+    },
+    saveCommentReply(comment){
+      let formData = new FormData();
+      formData.append("memberNickName", comment.commentUser);
+      formData.append("content", comment.commentContent);
+      formData.append("memberIcon", comment.headIcon);
+      formData.append("toCommentUser", comment.toCommentUser);
+      formData.append("commentId", comment.parentCommentId);//回复评论的id
+      this.axios.post('/comment/opeSecondary',formData).then(()=>{
+        this.getCommentData()
       })
     },
     inputFocus() {
@@ -193,14 +196,28 @@ export default {
       replyInput.style.border = "none"
     },
     showReplyInput(i, commentUser, commentId) {
-      this.comments[this.index].inputShow = false
-      this.index = i
-      this.comments[i].inputShow = true
-      this.toCommentUser = commentUser
-      this.parentCommentId = commentId
+      if (this.comments[i].inputShow == false) {
+        this.comments[this.index].inputShow = false
+        this.index = i
+        this.comments[i].inputShow = true
+        this.toCommentUser = commentUser
+        this.parentCommentId = commentId
+      }
+      else {this.comments[i].inputShow = false;}
+    },
+    showReply(i) {
+      if (this.comments[i].replyShow == false) {
+        this.comments[this.num_index].replyShow = false;
+        this.num_index = i;
+        this.comments[i].replyShow = true;
+      }
+      else {this.comments[i].replyShow = false;}
     },
     _inputShow(i) {
       return this.comments[i].inputShow
+    },
+    _replyShow(i) {
+      return this.comments[i].replyShow
     },
     sendComment() {
       if (!this.replyComment) {
@@ -213,8 +230,10 @@ export default {
         let a = {}
         let input = document.getElementById('replyInput')
         a.commentUser = this.myName
+        a.headIcon = this.myHeader
         a.commentContent = this.replyComment
-        a.knowlgId = this.knowlgIdParam
+        a.ProductIdParam = this.ProductIdParam
+        a.star = this.star
         this.comments.push(a)
         this.replyComment = ''
         input.innerHTML = ''
@@ -231,17 +250,17 @@ export default {
       } else {
         let a = {}
         a.commentUser = this.myName
+        a.headIcon = this.myHeader
         a.toCommentUser = this.toCommentUser
         a.commentContent = this.replyComment
         a.parentCommentId = this.parentCommentId
-        a.knowlgId = this.knowlgIdParam
         if(!this.comments[i].reply){
           this.comments[i].reply = []
         }
         this.comments[i].reply.push(a)
         this.replyComment = ''
         document.getElementsByClassName("reply-comment-input")[i].innerHTML = ""
-        this.saveComment(a)
+        this.saveCommentReply(a)
       }
     },
     onDivInput: function (e) {
@@ -258,9 +277,33 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus" >
+.center {
+  margin 0 auto
+  width 598px
+  height 600px
+  background-color #eee
+}
+/* 需要在外层套一个div,切记命名特殊一点,防止因缺少scoped，对其他页面会有冲突 */
+.center .el-scrollbar__wrap
+  overflow-x hidden
+
+.overflowAuto {
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.overflowAuto::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.overflowAuto::-webkit-scrollbar-thumb {
+  background: rgb(224, 214, 235);
+}
+
 .comment-bg
-  background-color #7ECF68
+  background-color #b5dcd4
 .my-reply
   padding 10px
   background-color #fafbfc
@@ -313,6 +356,7 @@ export default {
     width flex
 
 .reply-span
+  margin 20px
   font-size 14px
   color #909399
 

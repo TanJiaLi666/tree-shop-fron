@@ -12,9 +12,10 @@
       </div>
     </div>
     <el-drawer
+        class="el-drawer__body"
         title="用户评论"
         :visible.sync="drawer"
-        size="40%">
+        size="30%">
       <article-comment :product-id-param="productId"></article-comment>
     </el-drawer>
   </div>
@@ -56,6 +57,19 @@
 <style lang="scss">
   @import './../assets/scss/config.scss';
   @import './../assets/scss/mixin.scss';
+  .overflowAuto {
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  .overflowAuto::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  .overflowAuto::-webkit-scrollbar-thumb {
+    background: rgb(224, 214, 235);
+  }
   .nav-bar{
     height:70px;
     line-height:70px;
