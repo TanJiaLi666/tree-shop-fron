@@ -41,6 +41,9 @@
           <span class="reply-span" @click="showReplyInput(i,item.commentUser,item.commentId)">
             回复
           </span>
+          <span class="reply-span" @click="deleteComment(item.commentId)">
+            删除
+          </span>
           <span class="reply-span" @click="showReply(i)">
             查看回复
           </span>
@@ -57,11 +60,11 @@
                   <span class="author-commentUser">{{reply.commentUser}}</span>
                   <span class="author-time">{{reply.updatedDate}}</span>
                 </div>
-<!--                <div class="icon-btn">
-                  <span class="reply-span"
-                        @click="showReplyInput(i,reply.commentUser,reply.commentId)">回复
+                <div class="icon-btn">
+                  <span class="reply-span" @click="deleteCommentReply(item.commentId)">
+                    删除
                   </span>
-                </div>-->
+                </div>
                 <div class="talk-box">
                   <p>
                     <span class="reply"><span class="reply-span-down">回复</span> @{{reply.toCommentUser}}:</span>
@@ -166,6 +169,10 @@ export default {
       formData.append("memberIcon", comment.headIcon);
       formData.append("star", comment.star);
       this.axios.post('/comment/opeMain',formData).then(()=>{
+        this.$message({
+          message: '发布成功',
+          type: 'success'
+        });
         this.getCommentData()
       })
     },
@@ -177,6 +184,10 @@ export default {
       formData.append("toCommentUser", comment.toCommentUser);
       formData.append("commentId", comment.parentCommentId);//回复评论的id
       this.axios.post('/comment/opeSecondary',formData).then(()=>{
+        this.$message({
+          message: '回复成功',
+          type: 'success'
+        });
         this.getCommentData()
       })
     },
@@ -218,6 +229,24 @@ export default {
     },
     _replyShow(i) {
       return this.comments[i].replyShow
+    },
+    deleteComment(id){
+      this.axios.post(`/comment/delete/${id}`).then(()=>{
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+        this.getCommentData()
+      })
+    },
+    deleteCommentReply(id){
+      this.axios.post(`/comment/deleteRe/${id}`).then(()=>{
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+        this.getCommentData()
+      })
     },
     sendComment() {
       if (!this.replyComment) {
@@ -356,8 +385,8 @@ export default {
     width flex
 
 .reply-span
-  margin 20px
-  font-size 14px
+  margin 10px
+  font-size 15px
   color #909399
 
 .reply-span-down
