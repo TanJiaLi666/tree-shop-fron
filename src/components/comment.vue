@@ -41,7 +41,7 @@
           <span class="reply-span" @click="showReplyInput(i,item.commentUser,item.commentId)">
             回复
           </span>
-          <span class="reply-span" @click="deleteComment(item.commentId)">
+          <span :class="['reply-span',deleteReadOnly===true? 'myReadOnly' : '']" @click="deleteComment(item,item.commentId)">
             删除
           </span>
           <span class="reply-span" @click="showReply(i)">
@@ -61,7 +61,7 @@
                   <span class="author-time">{{reply.updatedDate}}</span>
                 </div>
                 <div class="icon-btn">
-                  <span class="reply-span" @click="deleteCommentReply(item.commentId)">
+                  <span class="reply-span" @click="deleteCommentReply(reply,reply.commentId)">
                     删除
                   </span>
                 </div>
@@ -120,6 +120,7 @@ export default {
   name: 'ArticleComment',
   data() {
     return {
+      deleteReadOnly: false,
       star: null,
       colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
       btnShow: false,
@@ -230,23 +231,42 @@ export default {
     _replyShow(i) {
       return this.comments[i].replyShow
     },
-    deleteComment(id){
-      this.axios.post(`/comment/delete/${id}`).then(()=>{
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        });
-        this.getCommentData()
-      })
+    judge(item){
+      if (item.commentUser===this.myName){
+        this.deleteReadOnly = true;
+        return true;
+      }
+      return false;
     },
-    deleteCommentReply(id){
-      this.axios.post(`/comment/deleteRe/${id}`).then(()=>{
+    deleteComment(item,id){
+      if (this.judge(item)) {
+        this.axios.post(`/comment/delete/${id}`).then(()=>{
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          this.getCommentData()
+        })
+      }else {
         this.$message({
-          message: '删除成功',
-          type: 'success'
+          message: '失败,不可操作'
         });
-        this.getCommentData()
-      })
+      }
+    },
+    deleteCommentReply(reply,id){
+      if (this.judge(reply)) {
+        this.axios.post(`/comment/deleteRe/${id}`).then(()=>{
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          this.getCommentData()
+        })
+      }else {
+        this.$message({
+          message: '失败,不可操作'
+        });
+      }
     },
     sendComment() {
       if (!this.replyComment) {
@@ -388,14 +408,14 @@ export default {
   margin 10px
   font-size 15px
   color #909399
-
+.myReadOnly
+  pointer-events none
 .reply-span-down
   font-size 12px
   color #909399
 
 .author-title:not(:last-child)
   border-bottom: 1px solid rgba(178, 186, 194, .3)
-
 .author-title
   padding 10px
 
@@ -451,4 +471,6 @@ export default {
 
   .reply-box
     margin 10px 0 0 50px
+
+
 </style>
