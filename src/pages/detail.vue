@@ -43,7 +43,7 @@
             <a href="javascript:;" class="btn btn-large fl" @click="addCart"
               >加入购物车</a
             >
-            <a href="javascript:;" class="btn btn-large btn-buy fl">立即购买</a>
+            <a href="javascript:;" class="btn btn-large btn-buy fl" @click="addOrder">立即购买</a>
           </div>
 
           <div class="after-sale-info">
@@ -107,6 +107,7 @@ import { swiper, swiperSlide } from "vue-awesome-swiper";
 import ProductParam from "./../components/ProductParam";
 import ServiceBar from "./../components/ServiceBar";
 import "swiper/dist/css/swiper.css";
+import constStore from "../store/constStore";
 export default {
   name: "detail",
   data() {
@@ -157,12 +158,27 @@ export default {
         this.serviceIds = res.serviceIds.split(",");
       });
     },
+    addOrder() {
+      if (this.skuId == null || this.skuId == undefined || this.skuId == "") {
+        this.$message.warning("请选择一种规格");
+        return;
+      }
+      this.axios
+          .post("/order/add", {
+            productId: this.id,
+            productSkuId: this.skuId,
+            quantity: 1,
+          })
+          .then((res) => {
+            constStore.itemids.push(res);
+            this.$router.push('/order/confirm');
+          });
+    },
     addCart() {
       if (this.skuId == null || this.skuId == undefined || this.skuId == "") {
         this.$message.warning("请选择一种规格");
         return;
       }
-      
       this.axios
         .post("/car/add", {
           productId: this.id,

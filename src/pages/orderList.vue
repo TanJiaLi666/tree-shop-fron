@@ -21,22 +21,25 @@
                 <span>| 总额:</span>
                 {{order.totalAmount}}
                 <span>| 订单状态:</span>
-                <span v-if="order.status === 0">
+                <span class="myStatus" v-if="order.status === 0">
                   待付款
                 </span>
-                 <span v-else-if="order.status === 1">
-                  代发货
+                 <span class="myStatus" v-else-if="order.status === 1">
+                  待发货
                 </span>
-                <span v-else-if="order.status === 2">
+                <span class="myStatus" v-else-if="order.status === 2">
                   已发货
                 </span>
-                <span v-else-if="order.status === 3">
+                <span class="myStatus" v-else-if="order.status === 3">
                   已完成
                 </span> 
-                <span v-else-if="order.status === 4">
+                <span class="myStatus" v-else-if="order.status === 4">
                   已关闭
                 </span>
-                <span v-else>
+                <span class="myStatus" v-else-if="order.status === 6">
+                  退货申请中
+                </span>
+                <span class="myStatus" v-else>
                   未知状态
                 </span>
 
@@ -62,6 +65,9 @@
               </div>
               <div class="good-state fr" v-if="order.status == 0"> 
                 <a href="javascript:;" @click="goPay(order.id)">去支付</a>
+              </div>
+              <div class="good-state fr" v-if="order.status == 2">
+                <a href="javascript:;" @click="returnShop(order.id)">退货</a>
               </div>
             </div>
           </div>
@@ -89,6 +95,18 @@
           <no-data v-if="!loading && list.length==0"></no-data>
         </div>
       </div>
+      <el-dialog :visible.sync="dialogFormVisible" title="请填写退货原因">
+        <el-autocomplete
+            class="inline-input"
+            v-model="option"
+            :fetch-suggestions="querySearch"
+            placeholder="请输入退货的原因"
+        ></el-autocomplete>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="returnShopReason">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -113,6 +131,10 @@
     },
     data(){
       return {
+        id : "",
+        option:"",
+        restaurants: [],
+        dialogFormVisible: false,
         loading:false,
         list:[],
         pageSize:10,
@@ -126,13 +148,32 @@
       this.getOrderList();
     },
     methods:{
+      returnShopReason(){
+        this.axios.post("/order/addReturnReason",Qs.stringify({
+          text:this.option,
+          id:this.id}),{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+        .then(res=>{
+          this.$message("申请成功，等待人工处理");
+        });
+        this.dialogFormVisible = false;
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      querySearch(queryString, cb) {
+        let restaurants = this.restaurants;
+        let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
       getOrderList(){
         this.loading = true;
         this.busy = true;
         this.axios.post('/order/list/userOrder',Qs.stringify({ 
             pageSize:10,
             pageNum:this.pageNum
-           
         }),{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then((res)=>{
           this.loading = false;
           this.list = res.list;
@@ -162,6 +203,17 @@
             orderId
           }
         })
+      },
+      returnShop(id){
+        this.axios.post("/order/getReturnReason",null,{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+            .then(res => {
+              for (let i = 0; i < res.length; i++) {
+                let txt = res[i];
+                this.restaurants.push({value: txt.name});
+              }
+            });
+        this.id = id;
+        this.dialogFormVisible = true;
       },
       // 第一种方法：分页器
       handleChange(pageNum){
@@ -198,13 +250,16 @@
             this.busy=true;
           }
         });
-      },
+      }
     }
   }
 </script>
 <style lang="scss">
   @import './../assets/scss/config.scss';
   @import './../assets/scss/mixin.scss';
+  .myStatus{
+    color: red;
+  }
   .order-list{
     .wrapper{
       background-color:$colorJ;

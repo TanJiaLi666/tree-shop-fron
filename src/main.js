@@ -4,7 +4,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueLazyLoad from 'vue-lazyload'
 import VueCookie from 'vue-cookie'
-import { Message,Autocomplete,Drawer,Button,Badge,Collapse,CollapseItem,Avatar,Rate } from 'element-ui'
+import { Message,Autocomplete,Drawer,Button,Badge,Collapse,CollapseItem,Avatar,Rate,Dialog } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // npm install --save font-awesome
 import 'font-awesome/css/font-awesome.min.css'
@@ -102,6 +102,7 @@ Vue.use(Collapse);
 Vue.use(CollapseItem);
 Vue.use(Avatar);
 Vue.use(Rate);
+Vue.use(Dialog);
 // 创建VUe根实例
 new Vue({
   store,
